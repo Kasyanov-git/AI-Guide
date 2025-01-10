@@ -174,20 +174,20 @@ def get_osm_data(place: str) -> OSMResult:
 
 
 class InteractiveTourGuide:
-    def __init__(self, llm, system_prompt, faiss_index_path):
+    def __init__(self, llm, system_prompt, faiss_index_path=''):
         self.memory = ConversationBufferMemory(
             memory_key="chat_history",
             return_messages=True
         )
 
-        # Загрузка FAISS-индекса
-        self.faiss_index = FAISS.load_local(
-            folder_path=faiss_index_path,
-            embeddings=HuggingFaceEmbeddings(model_name="cointegrated/rubert-tiny2"),
-            # embeddings=HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2"),
-            allow_dangerous_deserialization=True
-        )
-        self.retriever = self.faiss_index.as_retriever(k=5)  # TOP_K=5
+        # # Загрузка FAISS-индекса
+        # self.faiss_index = FAISS.load_local(
+        #     folder_path=faiss_index_path,
+        #     embeddings=HuggingFaceEmbeddings(model_name="cointegrated/rubert-tiny2"),
+        #     # embeddings=HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2"),
+        #     allow_dangerous_deserialization=True
+        # )
+        # self.retriever = self.faiss_index.as_retriever(k=5)  # TOP_K=5
 
         # Инициализация всех инструментов
         self.tavily_search = TavilySearchResults(max_results=2)
@@ -223,8 +223,8 @@ class InteractiveTourGuide:
 
         try:
             # Извлекаем релевантный контекст с помощью ретривера
-            retrieved_docs = self.retriever.get_relevant_documents(user_input)
-            retrieved_text = "\n\n".join([doc.page_content for doc in retrieved_docs])
+            # retrieved_docs = self.retriever.get_relevant_documents(user_input)
+            # retrieved_text = "\n\n".join([doc.page_content for doc in retrieved_docs])
             # print('retrieved_text: ', retrieved_text, '\n')
             # Получаем предыдущий контекст из памяти
             memory_variables = self.memory.load_memory_variables({})
@@ -234,7 +234,7 @@ class InteractiveTourGuide:
             full_context = previous_context + self.chat_history
 
             # Объединяем с текстами из FAISS-индекса
-            full_context.append(HumanMessage(content=f"Контекст из базы знаний:\n{retrieved_text}"))
+            # full_context.append(HumanMessage(content=f"Контекст из базы знаний:\n{retrieved_text}"))
             print('FULL_CONTEXT: ', full_context, '\n')
             result = self.agent.invoke({"messages": full_context})
 
@@ -291,7 +291,7 @@ if __name__ == "__main__":
     API_TOKEN = "NGIwMjNiNDYtZmFmNy00MWFmLTkzNjItZTVmMmI1ZmI5MGI0OjQ2Y2MzODkwLTFkODYtNDg5Ny05NTcyLWU4NzU1M2I5YjQ5Yw=="  # Укажите токен API
     MODEL_NAME = "GigaChat"
     # Задайте путь к сохранённому FAISS-индексу
-    FAISS_INDEX_PATH = "/faiss"
+    # FAISS_INDEX_PATH = "/faiss"
 
     # Инициализация клиентов и модели
     model = GigaChat(
@@ -301,7 +301,8 @@ if __name__ == "__main__":
         verify_ssl_certs=False
     )
     # Создание экземпляра гида
-    tour_guide = InteractiveTourGuide(llm=model, system_prompt=SYSTEM_PROMPT, faiss_index_path=FAISS_INDEX_PATH)
+    # tour_guide = InteractiveTourGuide(llm=model, system_prompt=SYSTEM_PROMPT, faiss_index_path=FAISS_INDEX_PATH)
+    tour_guide = InteractiveTourGuide(llm=model, system_prompt=SYSTEM_PROMPT)
 
     print("Добро пожаловать в интерактивный гид! Напишите 'выход' для завершения.")
     print("Доступные команды:")
