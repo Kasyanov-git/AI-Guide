@@ -288,7 +288,7 @@ SYSTEM_PROMPT = """Ты опытный экскурсовод-эксперт с 
 # === Основной скрипт ===
 if __name__ == "__main__":
     # Инициализация LLM (например, GigaChat)
-    API_TOKEN = "NGIwMjNiNDYtZmFmNy00MWFmLTkzNjItZTVmMmI1ZmI5MGI0OjQ2Y2MzODkwLTFkODYtNDg5Ny05NTcyLWU4NzU1M2I5YjQ5Yw=="  # Укажите токен API
+    API_TOKEN = "ВОТ_ЗДЕСЬ_ВОТ"  # Укажите токен API
     MODEL_NAME = "GigaChat"
     # Задайте путь к сохранённому FAISS-индексу
     # FAISS_INDEX_PATH = "/faiss"
